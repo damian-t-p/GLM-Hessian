@@ -1,0 +1,85 @@
+\PassOptionsToClass{
+  title={GLM Hessian Notes},
+  header,
+  letterpaper,
+  12pt
+}{hw-scrartcl}
+
+\documentclass{hw-scrartcl}
+
+\usepackage{prob-style}
+\usepackage{my-theorems}
+
+\begin{document}
+\maketitle
+\section{Definitions and set-up}
+We will consider a glm to be a collection of samples \(\{(x_i, y_i)\}_{i=1}^n \subseteq \R^p \times \R\), where
+\[
+  y_i|x_i
+  \sim P_{x_i \transp \beta}
+\]
+for \(\{P_\eta | \eta \in H\}\) a \(1\)-parameter exponential family indexed by a natural parameter \(\eta\) with densities
+\[
+  p_\eta(y)
+  = \exp\{\eta y - \psi(\eta)\} p_0(y).
+\]
+
+Conditional on \(X\), the matrix whose rows are the \(x_i\)s, \(y\) thus has density
+\[
+  f_\beta(y)
+  = \exp\Big\{\beta\transp (X\transp y) - \sum_{i=1}^n \psi(x_i\transp \beta)\Big\} f_0(y).
+\]
+
+The likelihood and corresponding derivatives are then given by
+\begin{align*}
+  \ell(\beta)
+  &= \beta\transp (X\transp y) - \sum_{i=1}^n \psi(x_i\transp \beta) + \log f_0(y), \\
+  \nabla \ell(\beta)
+  &= X\transp y - \sum_{i=1}^n \psi'(x_i\transp \beta) x_i, \\
+  \nabla^2 \ell(\beta)
+  &= -\sum_{i=1}^n x_i \psi''(x_i\transp \beta) x_t \transp \\
+  &= -X\transp D_{X\beta} X,
+\end{align*}
+where \(D_{X\beta}\) is the diagonal matrix with \(i\)th entry \(\psi''(x_i\transp \beta)\), which is the conditional variance of \(y_i\).
+
+Notice in particular that the Hessian of the log-likelihood has no dependence on \(y\) --- a feature unique to GLMs.
+
+\section{The Hessian at the MLE}
+We are interested in the spectrum of \(\nabla^2 \ell(\hat{\beta})\). Notice from the previous remark that this depends on \(y\) only through \(\hat{\beta}\). In particular, if \(\hat{\beta}\) is close to the true \(\beta_0\), we can expect that \(\nabla^2 \ell(\hat{\beta})\) is close to \(\nabla^2 \ell(\beta_0)\), and so doesn't depend on \(y\). In this case, the Hessian would be unaffected by using \(y\) to learn \(\beta\).
+
+To show this convergence, we will study the distance between eigenvalue distributions of matrices of the form \(X\transp D X\). In particular, for any Lipschitz function \(f\), we have that
+\begin{align*}
+  \abs[\Big]{\int f(\lambda) \diff \mu_u(\lambda) - \int f(\lambda) \diff \mu_v(\lambda)}
+  &\leq \frac{1}{n} \sum_{i=1}^n \abs{f(\lambda_i) - f(\nu_i)} \\
+  &\leq \frac{1}{n} \sum_{i=1}^n \abs{\lambda_i - \nu_i} \\
+  &\leq \frac{1}{n} \norm{X\transp (D_u - D_v) X}_1 \\
+  &\leq \frac{1}{n} \norm{D_u - D_v}_1 \norm{X}_\infty^2 \\
+  &= \norm{u - v}_1 \frac{1}{n} \norm{X}_\infty^2.
+\end{align*}
+
+If \(X\) is an \(n \times p\) matrix of iid normals, \(n\rightarrow \infty\) with \(p\) fixed, we have that \(\norm{X}_\infty^2 \sim n\) and \(\norm{\hat{\beta} - \beta_0} \rightarrow 0\). In this case, we have that
+\[
+  \mu_{\hat{\beta}} \rightarrow \mu_{\beta_0}
+\]
+almost surely in Wasserstein distance (and hence, for example, weakly).
+
+\section{Logistic regression}
+Consider the logistic setting where \(y_i\) takes values \(\{\pm 1\}\). In this case, we have that
+\[
+  \psi''(\eta)
+  = \frac{1}{\cosh^2 \eta},
+\]
+and therefore
+\[
+  \nabla^2 \ell(\beta)
+  = -\sum_{i=1}^n \frac{x_i x_i\transp}{\cosh^2 x_i\transp \beta}.
+\]
+
+For simplicity, consider the case where \(x_{ij}\) are iid normals and \(\beta \in \Unif(S^{p-1})\) is constant. Let \(P = I - \beta\beta\transp\) be the projection onto the subspace orthogonal to \(\beta\). We can then write
+\[
+  \nabla^2 \ell(\beta)
+  = -\sum_{i=1}^n \frac{(P x_i) x_i\transp}{\cosh^2 x_i\transp \beta} - \beta \sum_{i=1}^n \frac{(\beta\transp x_i) x_i\transp}{\cosh^2 x_i\transp \beta}.
+\]
+
+Asymptotically, the second
+\end{document}

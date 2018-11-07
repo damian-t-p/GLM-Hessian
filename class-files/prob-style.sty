@@ -1,0 +1,212 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{prob-style}[2018/05/04 Formatting and notation]
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{booktabs}          % nice tables
+\RequirePackage{graphicx}
+\RequirePackage[cal=boondox, 
+  frak=euler]{mathalfa}            % mathmode fonts
+\RequirePackage{mathtools}         % extensible arrows
+\RequirePackage{xifthen}           % Better switches for macro definitions
+\RequirePackage{xparse}            % Allows high-level argument passing
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[english]{babel}
+\RequirePackage{lmodern}           % Vector fonts
+
+% Allow math environments to break over pages
+\allowdisplaybreaks
+
+% Number specific equations in align* environment
+\newcommand{\numberthis}[1]{\addtocounter{equation}{1}\tag{\theequation}\label{#1}}
+
+% Start next page on same leaf as title
+\newcommand{\cleartooddpage}{%
+  \clearpage
+  \ifthenelse{\isodd{\value{page}}}
+    {}
+    {\null
+    \thispagestyle{empty}
+    \clearpage}
+}
+
+% Better standard Greek letters
+\let\temp\phi
+\let\phi\varphi
+\let\varphi\temp
+
+\let\temp\epsilon
+\let\epsilon\varepsilon
+\let\varepsilon\epsilon
+
+% Keep track of item labels in variable \@itemname
+\newcommand{\setitemnames}{%
+  \let\olditem\item
+  \def\@itemname{}
+  \renewcommand{\item}[1][]{%
+    \ifthenelse{\isempty{##1}}
+      {\olditem}
+      {\def\@itemname{##1}
+      \olditem[##1]}
+  }
+  \def\theitemname\@itemname
+}
+
+
+%%% STANDARD SETS %%%
+\providecommand{\N}{\mathbf{N}} % Natural numbers
+\providecommand{\Z}{\mathbf{Z}} % Integers
+\providecommand{\Q}{\mathbf{Q}} % Rational numbers
+\providecommand{\R}{\mathbf{R}} % Real numbers
+\providecommand{\C}{\mathbf{C}} % Complex numbers
+
+%%% PROBABILITY NOTATION %%%
+\newcommand{\E}{\mathbf{E}}
+\renewcommand{\Pr}{\mathbf{P}}
+\newcommand{\ind}{\mathbf{1}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\corr}{corr}
+\newcommand{\dKL}{D_{\mathrm{kl}}}
+\newcommand{\law}{\mathcal{L}}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\io}{\mathop{}\mathrm{i.o.}}
+\newcommand{\fo}{\mathop{}\mathrm{f.o.}}
+
+\newcommand{\deq}{\stackrel{\mathrm{d}}{=}}
+\newcommand{\aseq}{\stackrel{\mathrm{a.s.}}{=}}
+
+%%% MODES OF CONVERGENCE %%%
+\newcommand{\rmrightarrow}[1]{\xrightarrow{\mathrm{#1}}}
+\newcommand{\drightarrow}{\rmrightarrow{d}}
+\newcommand{\wrightarrow}{\rmrightarrow{w}}
+\newcommand{\vrightarrow}{\rmrightarrow{v}}
+\newcommand{\asrightarrow}{\rmrightarrow{a.s.}}
+\newcommand{\prightarrow}{\xrightarrow{\Pr}}
+\newcommand{\Lprightarrow}[1]{\xrightarrow{L_{#1}}}
+
+%%% COMMON DISTRIBUTIONS %%%
+\DeclareMathOperator{\Po}{Poisson}
+\DeclareMathOperator{\Exp}{Exponential}
+\DeclareMathOperator{\Ber}{Bernoulli}
+\DeclareMathOperator{\Binom}{Binomial}
+\DeclareMathOperator{\Unif}{Uniform}
+\DeclareMathOperator{\Gamm}{Gamma}
+\DeclareMathOperator{\Beta}{Beta}
+\DeclareMathOperator{\Geom}{Geometric}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\Chisq}{\chi^2}
+
+%%% STATISTICS NOTATION %%%
+\newcommand{\rss}{\textsc{rss}}
+\newcommand{\ols}{\textsc{ols}}
+
+%%% ANALYSIS NOTATION %%%
+
+% Derivative macros
+\newcommand{\diff}{\mathop{}\!\mathrm{d}} % use for dx in integrals
+\NewDocumentCommand{\@deriv}{momm}{%
+  \frac%
+    {#1\IfNoValueF{#2}{^{#2}} #3}%
+    {#1{#4}\IfNoValueF{#2}{^{#2}}}
+}
+\newcommand{\deriv}{\@deriv{\diff}}
+\newcommand{\@pderiv}{\@deriv{\partial}}
+
+\NewDocumentCommand{\pderiv}{omm}{
+  \IfNoValueTF{#1}%
+  {\frac{\@countDeriv{#3} #2}{\@assemblepartials{#3}}}%
+  {\@pderiv[#1]{#2}{#3}}
+}
+
+% Size macros
+\NewDocumentCommand{\@resizedelimiter}{mmO{}m}{%
+  \ifthenelse{\equal{\noexpand#3}{\noexpand\extend}}
+    {\left#1#4\right#2}
+    {#3#1#4#3#2}
+}
+\newcommand{\abs}{\@resizedelimiter{\lvert}{\rvert}}
+\newcommand{\floor}{\@resizedelimiter{\lfloor}{\rfloor}}
+\newcommand{\ceil}{\@resizedelimiter{\lceil}{\rceil}}
+\newcommand{\card}{\#}
+\NewDocumentCommand{\norm}{omo}{%
+  \@resizedelimiter{\lVert}{\rVert}[#1]{#2}\IfNoValueF{#3}{_{#3}}
+}
+
+\newcommand{\maps}{\colon} % use in f:X->Y
+\newcommand{\comp}{^c}
+\newcommand{\st}{\text{ s.t. }}
+\DeclareMathOperator{\sinc}{sinc}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\Lip}{Lip}
+
+\renewcommand{\Im}{\mathfrak{Im}}
+\renewcommand{\Re}{\mathfrak{Re}}
+
+\newenvironment{piecewise}
+{\left\{\begin{array}{cl}}
+{\end{array}\right.}
+
+%%% MATRIX NOTATION %%%
+\newcommand{\Id}{I}
+\newcommand{\transp}{^{\mathrm{T}}}
+\newcommand{\ctransp}{^\dagger}
+\DeclareMathOperator{\Tr}{tr}
+\DeclareMathOperator{\diag}{diag}
+\renewcommand{\vec}{\mathbf}
+\DeclareMathOperator{\op}{op}
+
+%%% ALGEBRA NOTATION %%%
+\DeclareMathOperator{\img}{Im}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\ev}{ev}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\id}{id}
+\newcommand{\adot}{\,\cdot\,} % Function argument dot
+\NewDocumentCommand{\iprod}{omm}{%
+  \@resizedelimiter{\langle}{\rangle}[#1]{#2, #3}
+}
+
+%%% GEOMETRY NOTATION %%%
+\DeclareMathOperator{\Vol}{vol}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% HELPER CODE FOR \pderiv
+
+% Count how many derivatives are taken
+\newcounter{@nderivs}
+\NewDocumentCommand{\@extractDeriv}{mm}{
+  \IfNoValueTF{#2}%
+    {\stepcounter{@nderivs}}%
+    {\addtocounter{@nderivs}{#2}}
+}
+\NewDocumentCommand{\@stepDeriv}{>{\SplitArgument{1}{^}}m}{
+  \@extractDeriv #1
+}
+\NewDocumentCommand{\@countDeriv}{>{\SplitList{,}}m}{
+  \setcounter{@nderivs}{0}
+  \ProcessList{#1}{\@stepDeriv}
+  \partial\ifthenelse{\value{@nderivs}=1}%
+    {}%
+    {^{\arabic{@nderivs}}}
+  }
+
+% Get mixed partial denominator
+\NewDocumentCommand{\@buildpartial}{mm}{
+  \partial #1\IfNoValueF{#2}{^{#2}}
+}
+\NewDocumentCommand{\@buildpartialfromlist}{>{\SplitArgument{1}{^}}m}{
+  \@buildpartial #1
+}
+\NewDocumentCommand{\@assemblepartials}{>{\SplitList{,}}m}{
+  \ProcessList{#1}{\@buildpartialfromlist}
+}

@@ -1,0 +1,42 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{my-theorems}[2018/01/22 Common theorem environments]
+
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{family=thm, prefix=thm@}
+
+\RequirePackage{enumitem}          % indents in enumerate environments
+\RequirePackage{amsthm}
+\RequirePackage{cleveref}
+% cleveref must be loaded after amsthm for theorem environments sharing sounters to be referenced properly
+
+\DeclareStringOption{numbering}
+
+% Allow paragraph indents in list environments
+\setenumerate{listparindent=\parindent}
+\setdescription{listparindent=\parindent}
+
+% Use description instead of enumerate on top-level lists
+\DeclareVoidOption{description-items}{
+  \RequirePackage{enumitem}
+  \setlist[enumerate,1]{label=(\alph*)}
+  \setlist[enumerate,2]{label=\roman*.}
+  \setlist[description]{font=\normalfont,listparindent=\parindent}
+}
+
+\ProcessKeyvalOptions*
+
+% Italic theorem environments 
+\theoremstyle{plain}
+
+\@ifundefined{\thm@numbering}
+  {\newtheorem{theorem}{Theorem}}
+  {\newtheorem{theorem}{Theorem}[\thm@numbering]}
+
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+% Upright theorem environments
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}

@@ -1,0 +1,1 @@
+$ENV{'TEXINPUTS'}='../class-files//:' . $ENV{'TEXINPUTS'};
