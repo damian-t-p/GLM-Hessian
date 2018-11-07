@@ -133,5 +133,47 @@ Finally, since \(R_I(z) = 1\), we have that
   &\approx \frac{s}{4}.
 \end{align*}
 
-Indeed, this is the \(R\)-transform of the semicircle law on \([-1, 1]\). Notice that is seems that the \(x_i\) having internal dependence causes no problems, except possibly rendering the sum asymptotically free as long as \(\norm{x_i}^2 \sim p\).
+Indeed, this is the \(R\)-transform of the semicircle law on \([-1, 1]\). Notice that is seems that the \(x_i\) having internal dependence causes no problems, except possibly rendering the sum asymptotically free, as long as \(\norm{x_i}^2 \sim p\).
+
+To generalise, suppose that instead, \(\norm{x_i}^2 \sim p W_i\) with \(W_i > 0\) and \(\E W_i = \mu\). We then have that
+\[
+  R_{x_i x_i\transp/p}(s)
+  \approx \frac{w_i}{p(1 - s w_i)},
+\]
+which renders, for large \(n\),
+\begin{align*}
+  R_{\sum_{i=1}^n x_i x_i\transp/p}(s)
+  &= \sum_{i=1}^n \frac{w_i}{p(1 - s w_i)} \\
+  &\approx \frac{n}{p} \E\Big[\frac{W}{1 - sW}\Big], \\
+  R_{\frac{1}{2\sqrt{np}}\sum_{i=1}^n x_i x_i\transp}(s)
+  &\approx \sqrt{\frac{n}{p}}\E\Big[\frac{W}{2 - sW\sqrt{p/n}}\Big], \\
+  R_{\frac{1}{2\sqrt{np}}(\sum_{i=1}^n x_i x_i\transp - n\mu I)}(s)
+  &\approx \sqrt{\frac{n}{p}}\bigg(\E\Big[\frac{W}{2 - sW\sqrt{n/p}}\Big] - \frac{\mu}{2}\bigg) \\
+  &= \sqrt{\frac{n}{p}} \E\Big[\frac{s W^2 \sqrt{p/n}}{2(2 - sW\sqrt{n/p})}\Big] \\
+  &\approx \frac{s}{4} \E W^2 \\
+  &= \frac{(s\sqrt{\E W^2})}{4} \sqrt{\E W^2}.
+\end{align*}
+
+Thus, we have that the ESD of
+\[
+  \frac{1}{\sqrt{\E W^2}} \frac{1}{2\sqrt{np}}\Big(\sum_{i=1}^n x_i x_i\transp - n\mu\Id\Big)
+\]
+converges to the semicircle law.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/corr-covmat-eigenvalues}
+  \caption{Eigenvalues of a scaled and centred sample covariance matrix.}
+  \label{fig:covmat-eig}
+\end{figure}
+
+We see this result supported empirically in \cref{fig:covmat-eig} which shows the abovse scaling applied to the matrix \(X D X\transp\), where \(X\) are \(p\times n\) iid standard Gaussians, \(D\) is a diagonal matrix with diagonal entries \(1/\cosh^2 W_i\), for standard normal \(W_i\) and \(n = 30000, p = 300\).
+
+Applying this result to the case of logistic regression, we expect to see a single eigenvalue at \(-n\E(W^2/\cosh^2 W)\) and the bulk conforming to a semicircle law supported on \(n\mu \pm 2\sigma \sqrt{np}\). With the same parameters as in the previous simulation, we see in \cref{fig:logistic-semicircle} that this is largely accurate.
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/logistic-eigenvalues}
+  \caption{Eigenvalues of the Hessian of logistic regression and theoretical predictions.}
+  \label{fig:logistic-semicircle}
+\end{figure}
 \end{document}
